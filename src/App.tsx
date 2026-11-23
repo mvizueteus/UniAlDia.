@@ -18,6 +18,9 @@ import {
 } from 'lucide-react';
 import ChatWidget from '@/components/ChatWidget';
 import AdminPage from '@/components/AdminPage';
+import ArticlePage from '@/components/ArticlePage';
+import Logo from '@/components/Logo';
+import { articles } from '@/articles';
 
 const images = {
   students: 'https://images.pexels.com/photos/34690994/pexels-photo-34690994.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
@@ -113,29 +116,14 @@ const siteSections: SiteSection[] = [
   },
 ];
 
-const latestNews = [
-  {
-    category: 'VIVIENDA',
-    title: 'Alquilar una habitación en Sevilla ya cuesta más que nunca: estas son las zonas que aún respiran',
-    image: images.city,
-    time: 'Hace 2 h',
-    color: 'coral',
-  },
-  {
-    category: 'UNIVERSIDAD',
-    title: 'La US activa nuevas ayudas para estudiantes: requisitos y fechas clave',
-    image: images.campus,
-    time: 'Hace 4 h',
-    color: 'blue',
-  },
-  {
-    category: 'OCIO',
-    title: 'Plan de finde: seis terrazas para sobrevivir al calor sin salir de Sevilla',
-    image: images.friends,
-    time: 'Ayer',
-    color: 'yellow',
-  },
-];
+const latestNews = articles.map((article) => ({
+  category: article.category,
+  title: article.title,
+  image: article.image,
+  time: article.time,
+  color: article.chipColor,
+  slug: article.slug,
+}));
 
 type Publication = {
   title: string;
@@ -147,11 +135,11 @@ type Publication = {
 };
 
 const publications: Publication[] = [
+  ...articles.map((a) => ({ title: a.title, category: a.category, description: a.description, href: `#/noticia/${a.slug}`, image: a.image, time: a.time })),
   { title: 'Lo que está pasando en Sevilla y sí te afecta', category: 'Actualidad', description: 'La actualidad de la ciudad resumida y explicada para que entiendas cómo te afecta.', href: '#inicio', image: images.students, time: '4 min' },
-  { title: 'El transporte cambia: esto es lo que tienes que saber antes de subirte', category: 'Sevilla', description: 'Novedades en bus, metro y tranvía: rutas, tarifas e incidencias del transporte urbano.', href: '#transporte', image: images.seville, time: '3 min' },
-  { title: 'La guía rápida para entender tus derechos como inquilino', category: 'Vivienda', description: 'Todo lo que necesitas saber sobre contratos, fianzas y derechos al alquilar un piso.', href: '#vivienda', time: '5 min' },
-  ...latestNews.map((n) => ({ title: n.title, category: n.category, description: n.title, href: '#actualidad', image: n.image, time: n.time })),
-  { title: 'Becas y ayudas: requisitos y fechas clave', category: 'Guía del estudiante', description: 'Calendario de becas, ayudas y subvenciones para estudiantes universitarios en Sevilla.', href: '#becas' },
+  { title: 'El transporte cambia: esto es lo que tienes que saber antes de subirte', category: 'Sevilla', description: 'Novedades en bus, metro y tranvía: rutas, tarifas e incidencias del transporte urbano.', href: '#/noticia/transporte-cambios-sevilla', image: images.seville, time: '3 min' },
+  { title: 'La guía rápida para entender tus derechos como inquilino', category: 'Vivienda', description: 'Todo lo que necesitas saber sobre contratos, fianzas y derechos al alquilar un piso.', href: '#/noticia/derechos-inquilino-guia', time: '5 min' },
+  { title: 'Becas y ayudas: requisitos y fechas clave', category: 'Guía del estudiante', description: 'Calendario de becas, ayudas y subvenciones para estudiantes universitarios en Sevilla.', href: '#/noticia/us-nuevas-ayudas-estudiantes' },
   { title: 'Erasmus y movilidad: lo que nadie te cuenta', category: 'Guía del estudiante', description: 'Trámites, destinos, consejos prácticos y errores comunes al irte de Erasmus.', href: '#erasmus' },
   { title: 'Pisos y residencias en Sevilla', category: 'Guía del estudiante', description: 'Barrios, precios y consejos para encontrar alojamiento asequible en Sevilla.', href: '#vivienda' },
   { title: 'Transporte y rutas para llegar a tu facultad', category: 'Guía del estudiante', description: 'Cómo moverte por Sevilla en bus, metro, tranvía y bici hasta el campus.', href: '#transporte' },
@@ -190,15 +178,6 @@ function searchPublications(query: string): Publication[] {
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .map((entry) => entry.pub);
-}
-
-function Logo({ light = false }: { light?: boolean }) {
-  return (
-    <a href="#inicio" className="flex items-center gap-2.5" aria-label="UniAlDía, inicio">
-      <span className="logo-mark"><CalendarDays size={21} strokeWidth={2.5} /></span>
-      <span className={`text-[1.75rem] font-black tracking-[-0.07em] ${light ? 'text-cream' : 'text-navy'}`}>Uni<span className="text-coral">AlDía</span></span>
-    </a>
-  );
 }
 
 function SectionHeading({ eyebrow, title, light = false }: { eyebrow: string; title: string; light?: boolean }) {
@@ -309,14 +288,14 @@ function MainApp() {
               </div>
             </article>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
-              <article className="side-story group bg-navy"><div className="relative h-44 overflow-hidden sm:h-full lg:h-44"><img src={images.seville} alt="Autobús urbano TUSSAM en una calle de Sevilla" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-navy">Sevilla</span></div><div className="flex flex-col justify-between p-5 lg:p-6"><h2 className="font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-cream">El transporte cambia: esto es lo que tienes que saber antes de subirte</h2><div className="mt-5 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-cream/60"><span>3 min de lectura</span><ArrowUpRight size={19} className="text-coral" /></div></div></article>
-              <article className="side-story group border border-navy/10 bg-coral"><div className="flex flex-col justify-between p-5 lg:p-6"><div><span className="eyebrow text-navy/70">¿Cómo te afecta?</span><h2 className="mt-3 font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-navy">La guía rápida para entender tus derechos como inquilino</h2></div><div className="mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-navy/70"><span>Guía útil · 5 min</span><span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-cream"><ArrowUpRight size={18} /></span></div></div></article>
+              <a href="#/noticia/transporte-cambios-sevilla" className="side-story group bg-navy"><div className="relative h-44 overflow-hidden sm:h-full lg:h-44"><img src={images.seville} alt="Autobús urbano TUSSAM en una calle de Sevilla" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-cream px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-navy">Sevilla</span></div><div className="flex flex-col justify-between p-5 lg:p-6"><h2 className="font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-cream">El transporte cambia: esto es lo que tienes que saber antes de subirte</h2><div className="mt-5 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-cream/60"><span>3 min de lectura</span><ArrowUpRight size={19} className="text-coral" /></div></div></a>
+              <a href="#/noticia/derechos-inquilino-guia" className="side-story group border border-navy/10 bg-coral"><div className="flex flex-col justify-between p-5 lg:p-6"><div><span className="eyebrow text-navy/70">¿Cómo te afecta?</span><h2 className="mt-3 font-display text-2xl font-bold leading-[1.02] tracking-[-0.04em] text-navy">La guía rápida para entender tus derechos como inquilino</h2></div><div className="mt-8 flex items-center justify-between text-xs font-bold uppercase tracking-widest text-navy/70"><span>Guía útil · 5 min</span><span className="grid h-9 w-9 place-items-center rounded-full bg-navy text-cream"><ArrowUpRight size={18} /></span></div></div></a>
             </div>
           </div>
         </section>
 
         <section id="actualidad" className="border-y border-navy/10 bg-white px-5 py-12 sm:px-8 lg:py-16">
-          <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Lo último" title="En tu radar" /><div className="grid gap-6 md:grid-cols-3">{latestNews.map((news) => <article key={news.title} className="news-card group"><div className="relative mb-4 aspect-[1.45] overflow-hidden rounded-2xl"><img src={news.image} alt={news.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className={`category-chip ${news.color}`}>{news.category}</span><button aria-label="Guardar noticia" onClick={() => setSaved(!saved)} className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/95 text-navy transition hover:bg-coral hover:text-cream"> <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /></button></div><div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-navy/45"><Clock3 size={14} /> {news.time}</div><h3 className="font-display text-[1.45rem] font-bold leading-[1.04] tracking-[-0.035em] text-navy transition-colors group-hover:text-coral">{news.title}</h3><a href="#como-te-afecta" className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-coral">Entenderlo mejor <ChevronRight size={16} /></a></article>)}</div></div>
+          <div className="mx-auto max-w-7xl"><SectionHeading eyebrow="Lo último" title="En tu radar" /><div className="grid gap-6 md:grid-cols-3">{latestNews.map((news) => <article key={news.title} className="news-card group"><div className="relative mb-4 aspect-[1.45] overflow-hidden rounded-2xl"><a href={`#/noticia/${news.slug}`}><img src={news.image} alt={news.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /></a><span className={`category-chip ${news.color}`}>{news.category}</span><button aria-label="Guardar noticia" onClick={() => setSaved(!saved)} className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/95 text-navy transition hover:bg-coral hover:text-cream"> <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /></button></div><div className="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-navy/45"><Clock3 size={14} /> {news.time}</div><a href={`#/noticia/${news.slug}`}><h3 className="font-display text-[1.45rem] font-bold leading-[1.04] tracking-[-0.035em] text-navy transition-colors group-hover:text-coral">{news.title}</h3></a><a href={`#/noticia/${news.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-extrabold text-coral">Leer la noticia <ChevronRight size={16} /></a></article>)}</div></div>
         </section>
 
         <section id="como-te-afecta" className="bg-navy px-5 py-14 sm:px-8 lg:py-20">
@@ -335,8 +314,30 @@ function MainApp() {
   );
 }
 
+function useArticleSlug(): string | null {
+  const readSlug = () => {
+    const match = window.location.hash.match(/^#\/noticia\/(.+)$/);
+    return match ? match[1] : null;
+  };
+  const [slug, setSlug] = useState<string | null>(readSlug);
+  useEffect(() => {
+    const onHashChange = () => setSlug(readSlug());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+  return slug;
+}
+
+function ArticleRoute() {
+  const slug = useArticleSlug();
+  const navigate = (next: string | null) => {
+    window.location.hash = next ? `#/noticia/${next}` : '#inicio';
+  };
+  return slug ? <ArticlePage slug={slug} onNavigate={navigate} /> : <MainApp />;
+}
+
 function App() {
-  return window.location.pathname.startsWith('/admin') ? <AdminPage /> : <MainApp />;
+  return window.location.pathname.startsWith('/admin') ? <AdminPage /> : <ArticleRoute />;
 }
 
 export default App;
