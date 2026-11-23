@@ -26,7 +26,7 @@ a { text-decoration: none; }
   .bg-coral { background-color: #F04E4E; }
   .bg-cream { background-color: #FFF4E6; }
   .topline { background: #0B1F4B; color: #FFF4E6; }
-  .logo-mark { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 11px; background: #0B1F4B; color: #FFF4E6; box-shadow: inset 0 -5px 0 #F04E4E; }
+  .logo-mark { display: grid; place-items: center; width: 39px; height: 39px; }
   .nav-link { position: relative; color: #0B1F4B; font-size: 0.85rem; font-weight: 700; }
   .nav-link::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -7px; height: 2px; background: #F04E4E; transition: right .25s ease; }
   .nav-link:hover::after { right: 0; }
